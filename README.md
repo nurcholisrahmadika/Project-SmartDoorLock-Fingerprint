@@ -1,16 +1,22 @@
-# Smart Door Lock IoT (ESP32 + RFID + Firebase)
+# Smart Door Lock Fingerprint (ESP32)
 
-Sistem pengunci pintu otomatis berbasis Internet of Things (IoT) menggunakan ESP32 dan RFID untuk autentikasi akses, serta terintegrasi dengan Firebase untuk monitoring dan kontrol secara real-time melalui web dashboard.
+Sistem pengunci pintu otomatis berbasis Internet of Things (IoT) menggunakan sensor fingerprint sebagai metode autentikasi utama. Sistem ini dilengkapi dengan OLED display, buzzer, LED indikator, serta tombol manual untuk membuka pintu dari dalam.
+
+---
+
+## Deskripsi Sistem
+Sistem ini dirancang untuk mengontrol akses pintu menggunakan sidik jari. Pengguna yang terdaftar dapat membuka pintu, sedangkan akses yang tidak dikenali akan ditolak. Sistem juga menyediakan tombol keluar (exit button) untuk membuka pintu secara manual dari dalam.
 
 ---
 
 ## Fitur Utama
-- Autentikasi akses menggunakan RFID (UID Card)
-- Monitoring dan kontrol real-time berbasis Firebase
-- Pencatatan riwayat akses pengguna (log system)
-- Mode offline terbatas untuk admin (fail-safe system)
-- Notifikasi buzzer dan tampilan LCD I2C
-- Indikator LED untuk status akses
+- Autentikasi akses menggunakan fingerprint
+- Tampilan status pada OLED display
+- Indikator LED untuk status akses (diterima / ditolak)
+- Notifikasi buzzer untuk feedback suara
+- Relay untuk kontrol kunci pintu
+- Tombol manual (exit button) untuk akses dari dalam
+- Sistem auto-restart untuk menjaga stabilitas
 
 ---
 
@@ -18,35 +24,39 @@ Sistem pengunci pintu otomatis berbasis Internet of Things (IoT) menggunakan ESP
 
 ### Hardware
 - ESP32  
-- RFID RC522  
+- Sensor Fingerprint (Adafruit compatible)  
+- OLED SSD1306 (I2C)  
 - Relay Module  
-- LCD 16x2 I2C  
 - Buzzer  
 - LED Indicator  
-- Power Supply + Battery Backup (UPS)
+- Push Button (Exit Button)  
 
 ### Software
 - Arduino IDE  
-- Firebase Realtime Database  
-- Web Dashboard (HTML, CSS, JavaScript)
+- Adafruit Fingerprint Library  
+- Adafruit SSD1306  
+- Adafruit GFX  
 
 ### Protocol
-- WiFi Communication  
-- HTTP / Firebase API  
-- I2C (LCD)  
-- SPI (RFID)
+- I2C (OLED)  
+- Serial Communication (Fingerprint)  
 
 ---
 
 ## Cara Kerja Sistem
-1. Pengguna menempelkan kartu RFID ke sensor  
-2. ESP32 membaca UID dari kartu  
-3. UID dikirim ke Firebase untuk verifikasi  
-4. Jika terdaftar:
-   - Relay aktif (pintu terbuka)
-   - Data akses dicatat ke database  
-5. Jika tidak terdaftar:
+1. Sistem menunggu input sidik jari  
+2. Sensor membaca fingerprint pengguna  
+3. Jika data cocok:
+   - Pintu terbuka (relay aktif)
+   - LED hijau menyala
+   - Buzzer memberikan suara indikator
+4. Jika tidak cocok:
    - Akses ditolak
-   - Buzzer berbunyi  
-6. Jika offline:
-   - Hanya UID admin yang bisa mengakses  
+   - LED merah menyala
+   - Buzzer berbunyi sebagai peringatan
+5. Tombol exit dapat digunakan untuk membuka pintu dari dalam  
+6. Sistem akan restart otomatis setiap interval untuk menjaga kestabilan  
+
+---
+
+## Struktur Project
